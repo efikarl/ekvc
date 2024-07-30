@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-#  Copyright ©2018 efikarl, https://efikarl.com.
+#  Copyright ©2024 efikarl, https://efikarl.com.
 #
 #  This program is just made available under the terms and conditions of the
 #  MIT license: https://efikarl.com/mit-license.html.
@@ -10,25 +10,11 @@
 #
 #--
 
-ekvc_font()
-{
-  echo "ekvc_font ..."
-  if [[ `uname` == 'Darwin' ]]
-  then #macos
-    fontdir="$HOME/Library/Fonts"
-  else #linux
-    fontdir="$HOME/.local/share/fonts"
-  fi
-  [[ -d $fontdir ]] || mkdir -p $fontdir
-  cp -f $ekvcdir/fonts/Hack/*   $fontdir
-  echo "ekvc_font done"
-}
-
 ekvc_requisite()
 {
   echo "ekvc_requisite ..."
 
-  prerequisite="nvim git curl python${pythonr}"
+  prerequisite="nvim git curl python${verofpi} fd rg"
   meet=1
   for i in $prerequisite
   do
@@ -40,12 +26,6 @@ ekvc_requisite()
   [[ $meet == 0 ]] && {
     exit 1
   }
-  # install defx depex
-  if ! (hash pip${pythonr}) &> /dev/null
-  then
-    curl https://bootstrap.pypa.io/get-pip.py | python${pythonr} > /dev/null
-  fi
-  python${pythonr} -m pip install --user pynvim > /dev/null
 
   echo "ekvc_requisite done"
 }
@@ -64,7 +44,8 @@ ekvc_install()
   }
 
   # install font for ekvc
-  ekvc_font
+  [[ -d $fontdir ]] || mkdir -p $fontdir
+  cp -f $ekvcdir/fonts/Hack/*   $fontdir
 
   # setup soft link to nvim configuration
   ([[ -d $initdir ]] || mkdir -p $initdir) && ([[ -d $initdir/nvim ]] && rm -rf $initdir/nvim)
@@ -96,21 +77,22 @@ ekvc_help()
   exit -1
 }
 
-insflag=1
+fontdir=~/.local/share/fonts
 ekvcdir=~/.ekvc
 initdir=~/.config
-pythonr=3
+verofpi=3
+install=1
 
 while getopts 'ri' opt
 do
   case $opt in
-  r) insflag=0;;
-  i) insflag=1;;
+  r) install=0;;
+  i) install=1;;
   *) ekvc_help;;
   esac
 done
 
-if [[ $insflag == 0 ]]
+if [[ $install == 0 ]]
 then
   ekvc_remove
 else

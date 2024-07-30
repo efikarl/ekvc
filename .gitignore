@@ -1,11 +1,11 @@
-_*
-.DS_Store
 .vscode
 .cache/
-.netrwhist
-
+.tests
+.repro
+/doc/tags
 /autoload/*
 !autoload/plug.vim
 /bundle/
 /info
 squashfs-root
+debug.lua
